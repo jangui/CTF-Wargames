@@ -1,0 +1,14 @@
+
+two arrays are = when hashed in php because each array becomes "Array" and then gets hashed
+
+to do so in url
+
+/php?thing1[]=a&thing2[]=b
+
+this will pass thing1 and thing2 as arrays
+
+normally it would try to do somehting like
+
+/php?thing1=a&thing2=b
+
+this wont be passed as arrays
