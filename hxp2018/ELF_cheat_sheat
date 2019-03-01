@@ -1,0 +1,74 @@
+ELF HEADER:
+
+must be set accurately:
+e_machine = 3 (intel 386 target)
+first 4 bytes must have magic number
+e_type = 2 (executable)
+e_entry = points to start of program
+e_phoff = offset of program header table
+e_phnum = entries in header table
+e_ehsize = verify elf header is expected size (unchecked in older kernals, needed currently)
+
+completely ignored:
+e_ident  
+e_version = elf version
+e_flags
+e_ehsize = verify elf header size
+everything else in elf header file can be set to anything, if these flags are positioned at the end of the file and have no value set to them, linux will pad 0's to fill these spaces, so we don't actually have to set them a random value, we can leave them at end of file and linux will pad 0's and YEET
+
+
+PROGRAM HEADER:
+
+must be set accurately:
+p_type = 1 (marking as loadble segment)
+p_offset = file offset to start loading
+p_vaddr = load address (can be anything between 0x00000000 and 0x80000000 and must be page aligned) (usually this is set to 0x0804800)
+p_filesz = bytes to load out of the file into memory
+p_memsz = how large memory segment must be (usually same as p_filesz)
+    *note p_memsz and p_filesz can be a larger num than needed bcs u can ask for more space from the OS even if not used, sometimes this will help save space when organizing the headers
+p_flags = 4 (permissions to give mem segment, 4 = read, 1 = exec, read and exec apparently imply each other, 1 or 4 will do)
+p_align = alignment reqs for mem segment
+
+
+completely ignored:
+p_paddr
+
+
+OUR STRAT: (We only get 45 bytes!!)
+
+make a read call that will overwrite the file 
+then call the mem location where we overwrote at (overwrite with system sys call)
+get shell
+big bucks$$$$
+
+
+also note, it doesn't matter if our program can't properly exit because we are trying to pop a shell while it executes
+
+read takes 3 args
+1: 0
+2: location to read into at
+3: size we are reading
+
+2: read into where the file loads (0x08048000 is default but we can chose load addr with p_vaddr) (p_vaddr set to $$ which is the val of org)
+
+eax = 3 (read syscall) (int 80 to make syscall)
+ebx = arg 1 (might be 0 by default)
+ecx = arg 2
+edx = arg 3 (if 0 isnt default there might b a large enough val in here)
+
+unoptimized shell code:
+
+mov eax, 0x3
+mov ebx, 0x0
+mov ecx, 0x08048000
+mov edx, some large num
+int 0x80
+call 0x0804800
+
+
+how to compile
+nasm -f bin -o a.out [filename.asm]
+
+check bytes
+wc -c ./a.out
+
