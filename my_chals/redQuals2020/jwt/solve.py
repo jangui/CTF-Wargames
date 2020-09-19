@@ -34,7 +34,6 @@ def solve():
 
     print(flag)
 
-
 if __name__ == "__main__":
     solve()
 
