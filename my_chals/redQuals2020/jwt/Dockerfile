@@ -10,9 +10,7 @@ RUN pip3 install -r ./requirements.txt \
 
 USER www
 
-ENV secret red
-
 COPY . .
 
-CMD gunicorn -b 0.0.0.0:5000 -w 8 --reload --capture-output --enable-stdio-inheritance --log-level debug src:app
+CMD gunicorn -b 0.0.0.0:5000 -w 8 src:app
 
